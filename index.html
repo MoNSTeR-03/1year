@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>📬 LAS CARTAS DEL FUTURO | AHMAD 🌙 RYOKO 📬</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            overflow: hidden;
+            font-family: -apple-system, 'Segoe UI', 'Courier New', monospace;
+            background: linear-gradient(to bottom, #0a0a2a, #1a0a2a);
+            color: white;
+        }
+
+        .ui-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(15px);
+            border-radius: 28px;
+            padding: 12px 14px;
+            border: 1px solid #ffaa66;
+            box-shadow: 0 0 25px rgba(255, 170, 102, 0.3);
+            z-index: 20;
+            text-align: center;
+            pointer-events: auto;
+        }
+
+        .message-box {
+            background: #1a0525dd;
+            border-radius: 20px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #ffaa66;
+            color: #ffe0f0;
+            font-size: 0.7rem;
+            line-height: 1.6;
+            max-height: 120px;
+            overflow-y: auto;
+            text-align: left;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-word;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .letters-counter {
+            font-size: 0.7rem;
+            color: #ffcc99;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .reset-btn {
+            background: #ff8866aa;
+            border: 1px solid #ffaa88;
+            padding: 10px 20px;
+            border-radius: 60px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-block;
+            transition: 0.08s linear;
+            font-family: monospace;
+            touch-action: manipulation;
+        }
+
+        .reset-btn:active {
+            transform: scale(0.96);
+            background: #ffaa88cc;
+        }
+
+        .title {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #ffccaa;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 6px;
+            border-radius: 30px;
+            width: fit-content;
+            margin: 0 auto;
+            backdrop-filter: blur(4px);
+            z-index: 20;
+            pointer-events: none;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .message-box { font-size: 0.65rem; max-height: 115px; padding: 10px; }
+            .reset-btn { padding: 8px 16px; font-size: 0.75rem; }
+            .letters-counter { font-size: 0.65rem; }
+            .title { font-size: 0.6rem; top: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="title">📬 LAS CARTAS DEL FUTURO | AHMAD ✨ RYOKO 📬</div>
+    <div class="ui-panel" id="uiPanel">
+        <div class="letters-counter" id="lettersCounter">✉️ CARTAS POR ABRIR: 6/6 ✉️</div>
+        <div class="message-box" id="romanticMessage">
+            ✨ Toca un SOBRE para abrir una carta del futuro... ✨<br>
+            Cada carta es un mensaje de Ahmad desde diferentes años. 📬💜
+        </div>
+        <div class="reset-btn" id="resetBtn">🔄 REINICIAR CARTAS 🔄</div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a0a2a);
+        scene.fog = new THREE.FogExp2(0x0a0a2a, 0.006);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 2.5, 9);
+        camera.lookAt(0, 1.5, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0px';
+        labelRenderer.domElement.style.left = '0px';
+        labelRenderer.domElement.style.pointerEvents = 'none';
+        document.body.appendChild(labelRenderer.domElement);
+
+        // Luces
+        const ambientLight = new THREE.AmbientLight(0x222244);
+        scene.add(ambientLight);
+        const mainLight = new THREE.DirectionalLight(0xffccaa, 1);
+        mainLight.position.set(3, 5, 4);
+        mainLight.castShadow = true;
+        scene.add(mainLight);
+        const backLight = new THREE.PointLight(0xffaa66, 0.6);
+        backLight.position.set(0, 2, -3);
+        scene.add(backLight);
+        
+        const moonLight = new THREE.PointLight(0xffaa88, 0.5);
+        moonLight.position.set(3, 4, -5);
+        scene.add(moonLight);
+
+        // Estrellas de fondo
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = [];
+        for (let i = 0; i < 2000; i++) {
+            starPos.push((Math.random() - 0.5) * 400);
+            starPos.push((Math.random() - 0.5) * 200);
+            starPos.push((Math.random() - 0.5) * 150 - 50);
+        }
+        starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
+        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffddcc, size: 0.08, transparent: true, opacity: 0.6 }));
+        scene.add(stars);
+
+        // Partículas de tiempo (relojes flotantes)
+        const timeParticles = [];
+        for (let i = 0; i < 100; i++) {
+            const particle = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 6), new THREE.MeshStandardMaterial({ color: 0xffaa77, emissive: 0xff8844 }));
+            particle.userData = { angle: Math.random() * Math.PI * 2, radius: 3 + Math.random() * 4, speed: 0.002 + Math.random() * 0.005, yOff: Math.random() * 4 };
+            scene.add(particle);
+            timeParticles.push(particle);
+        }
+
+        // Suelo
+        const ground = new THREE.Mesh(new THREE.CircleGeometry(7, 32), new THREE.MeshStandardMaterial({ color: 0x1a2a1a, roughness: 0.8, emissive: 0x112211 }));
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = -0.6;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // ========= CARTAS (SOBRES) FLOTANDO =========
+        const lettersData = [
+            { 
+                year: "1 AÑO DESPUÉS",
+                title: "📬 CARTA DEL FUTURO: 1 AÑO",
+                color: 0xff88aa,
+                message: "💌 AHMAD → RYOKO (1 año en el futuro) 💌\n\nMi amor, Ryoko...\n\nHa pasado un año desde que te escribí esta carta. No puedo creer cómo ha volado el tiempo. Hoy desperté a tu lado, con tu cabeza en mi pecho y tu respiración suave. Sigo enamorándome de ti cada día, como si fuera la primera vez que te vi.\n\nHemos crecido tanto juntos. Recuerdo cuando apenas empezábamos y teníamos miedo de lo que vendría. Ahora, un año después, solo pienso en lo afortunado que soy de tenerte a mi lado.\n\nHemos viajado juntos, hemos reído juntos, hemos llorado juntos. Y cada momento ha sido perfecto porque estabas tú.\n\nTe quiero más que ayer, pero menos que mañana.\n\nCon todo mi amor,\n— Ahmad 💕",
+                emoji: "💌"
+            },
+            { 
+                year: "3 AÑOS DESPUÉS",
+                title: "📬 CARTA DEL FUTURO: 3 AÑOS",
+                color: 0xffaa66,
+                message: "💌 AHMAD → RYOKO (3 años en el futuro) 💌\n\nMi vida, mi guerrera...\n\nTres años. Han pasado tres años desde que empezamos este hermoso viaje juntos. Y déjame decirte que cada día ha sido mejor que el anterior.\n\nHoy tenemos una casa pequeña pero hermosa, llena de plantas que tú cuidas con tanto amor. Tú les pones nombres a todas, y yo me río, pero en el fondo me encanta verte feliz.\n\nRecuerdo cuando te reías de mí porque no sabía regar una flor. Ahora, gracias a ti, nuestro jardín es hermoso. Como tú.\n\nMe encanta cuando cocinamos juntos los domingos y terminas bailando en la cocina con tu canción favorita. Esos pequeños momentos son los que más atesoro, Ryoko.\n\nGracias por estos tres años increíbles. No puedo esperar a ver lo que nos espera.\n\nTe amo más cada día.\n\nSiempre tuyo,\n— Ahmad 💗",
+                emoji: "💗"
+            },
+            { 
+                year: "5 AÑOS DESPUÉS",
+                title: "📬 CARTA DEL FUTURO: 5 AÑOS",
+                color: 0xffcc88,
+                message: "💌 AHMAD → RYOKO (5 años en el futuro) 💌\n\nMi amor eterno...\n\nCinco años. Increíble, ¿verdad? Parece que fue ayer cuando nos conocimos y hoy no puedo imaginar mi vida sin ti.\n\nHoy, mientras te miro dormir, me doy cuenta de que no cambiaría nada. Cada discusión, cada risa, cada lágrima, cada abrazo... todo ha valido la pena para llegar hasta aquí.\n\nHemos viajado tanto juntos. Recuerdo ese viaje a la playa donde casi perdemos el vuelo porque te quedaste dormida. O la vez que nos perdimos en las montañas y terminamos riendo bajo la lluvia como dos niños.\n\nLo mejor de todo, Ryoko, es que todavía me miras como el primer día. Todavía sonríes como si fuera nuestro primer encuentro.\n\nGracias por estos cinco años increíbles. Gracias por cada sonrisa, cada abrazo, cada te quiero.\n\nTe quiero con locura,\n— Ahmad 🔥",
+                emoji: "🔥"
+            },
+            { 
+                year: "10 AÑOS DESPUÉS",
+                title: "📬 CARTA DEL FUTURO: 10 AÑOS",
+                color: 0xdd99ff,
+                message: "💌 AHMAD → RYOKO (10 años en el futuro) 💌\n\nMi sol, mi vida, mi todo...\n\nDiez años. Una década entera a tu lado. Y sabes qué? Siento que aún no es suficiente. Quiero diez más, veinte más, toda la eternidad contigo.\n\nEn estos diez años hemos construido tanto. Nuestro hogar, nuestros sueños, nuestras memorias. Y lo más hermoso de todo... nuestra familia.\n\nAhora tenemos tres niños hermosos. Una niña de 7 años con tus ojos brillantes y tu sonrisa traviesa. Un niño de 5 años que ya quiere volar como su mamá guerrera. Y el pequeño de 2 años que tiene tu carácter y mi ternura.\n\nMe encanta verte jugar con ellos, Ryoko. Eres la mejor madre del universo. Los ves crecer con tus ojos llenos de orgullo y amor.\n\nA veces, cuando los ves dormir, te quedas mirándolos en silencio con una lágrima en el ojo. Y yo te abrazo por detrás, y me das las gracias. Pero yo soy quien te lo agradece a ti. Por darme esta vida. Por darme esta familia. Por darme TODO.\n\nNuestros hijos tienen tu fuerza y mi terquedad. Pero sobre todo, tienen el amor más puro que dos personas puedan dar.\n\nTe amo, Ryoko. Por siempre.\n\nTu esposo eternamente agradecido,\n— Ahmad 💕👨‍👩‍👧‍👦",
+                emoji: "👨‍👩‍👧‍👦"
+            },
+            { 
+                year: "20 AÑOS DESPUÉS",
+                title: "📬 CARTA DEL FUTURO: 20 AÑOS",
+                color: 0xffaacc,
+                message: "💌 AHMAD → RYOKO (20 años en el futuro) 💌\n\nMi amor, mi compañera, mi todo...\n\nVeinte años. ¿Puedes creerlo? Hemos envejecido juntos, pero cuando te miro, todavía veo a esa guerrera indomable que conocí hace tanto tiempo.\n\nNuestros hijos ya son adolescentes. La mayor tiene 17 años y es tan fuerte y valiente como tú. El del medio tiene 15 y sueña con viajar por el espacio como sus padres. El pequeño tiene 12 y es el alma de la casa, siempre haciéndonos reír.\n\nA veces peleamos como cualquier familia, pero al final del día, siempre terminamos riendo juntos alrededor de la mesa, contando historias y planeando el futuro.\n\nMe encanta cuando planeamos nuestras vacaciones familiares. Tú siempre eliges destinos imposibles, y yo termino organizando todo. Es nuestra danza, nuestra forma de amarnos.\n\nA veces, cuando los niños duermen, nos sentamos en el balcón a mirar las estrellas. Y me tomas de la mano, y me dices \"gracias por estos veinte años\". Y yo solo puedo responder \"gracias por quedarte a mi lado todo este tiempo\".\n\nNo cambiaría nada. Ni un solo día, ni una sola discusión, ni una sola lágrima. Todo nos ha traído hasta aquí, más unidos que nunca.\n\nTe quiero con toda mi alma.\n\nSiempre tuyo,\n— Ahmad 💖",
+                emoji: "💖"
+            },
+            { 
+                year: "30 AÑOS DESPUÉS",
+                title: "📬 CARTA DEL FUTURO: 30 AÑOS",
+                color: 0xff88cc,
+                message: "💌 AHMAD → RYOKO (30 años en el futuro) 💌\n\nMi amor eterno...\n\nTreinta años. Una vida entera. Y todavía me despierto cada mañana con ganas de verte sonreír, con ganas de pasar un día más a tu lado.\n\nNuestros hijos ya son adultos. La mayor se casó el año pasado y nos dio un hermoso nieto. El del medio está terminando sus estudios en otra ciudad. El pequeño ya trabaja y nos visita cada fin de semana.\n\nLa casa está más tranquila ahora. A veces extraño el ruido y el caos de cuando eran pequeños, pero me encanta esta nueva etapa: solo tú y yo, como al principio, pero más enamorados que nunca.\n\nTodavía bailamos en la cocina, aunque ahora más despacio. Todavía nos reímos de las mismas bromas. Todavía me miras como si fuera el primer día.\n\nRyoko, han pasado treinta años, y todavía no encuentro palabras para describir lo mucho que te quiero. No hay galaxia, no hay universo, no hay tiempo suficiente para amarte como mereces.\n\nGracias por estos treinta años. Gracias por estar a mi lado en las buenas y en las malas. Gracias por darme una familia hermosa. Gracias por ser TÚ, siempre tú.\n\nTe amo. Hoy, mañana y siempre.\n\nPor toda la eternidad,\n— Ahmad 💕🌙",
+                emoji: "🌙"
+            }
+        ];
+
+        let letters = [];
+        let openedCount = 0;
+        let poemShown = false;
+
+        const finalPoem = `💗💗💗 POEMA DE AHMAD PARA RYOKO 💗💗💗
+           (La carta que nunca termina)
+
+Pasaron días, pasaron años,
+y yo sigo amándote como el primer día.
+Tus canas son estrellas en tu cabeza,
+tu sonrisa sigue siendo mi guía.
+
+Tuvimos hijos, tuvimos sueños,
+tuvimos noches de lluvia y de sol.
+Y en cada amanecer, Ryoko,
+renace nuestro amor con más pasión.
+
+El tiempo pasó volando,
+como un susurro, como el viento.
+Pero mi corazón sigue gritando
+que fuiste mi mejor momento.
+
+Hoy, mañana y por siempre,
+en esta vida y en la que vendrá.
+Ryoko, dueña de mi alma,
+contigo quiero envejecer, y nada más.
+
+Gracias por treinta años,
+gracias por todo tu amor sin medida.
+Eres mi principio, mi camino,
+mi más hermoso atardecer, mi vida.
+
+— Ahmad 💕🔥
+✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨`;
+
+        // Crear sobre (carta) 3D
+        function createEnvelope(data, index, xPos, zPos) {
+            const group = new THREE.Group();
+            
+            // Cuerpo del sobre
+            const bodyMat = new THREE.MeshStandardMaterial({ color: data.color, emissive: data.color, emissiveIntensity: 0.3, transparent: true, opacity: 0.9 });
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.45, 0.1), bodyMat);
+            body.castShadow = true;
+            group.add(body);
+            
+            // Solapa del sobre
+            const flapMat = new THREE.MeshStandardMaterial({ color: data.color, emissive: data.color, emissiveIntensity: 0.2 });
+            const flap = new THREE.Mesh(new THREE.ConeGeometry(0.45, 0.2, 3), flapMat);
+            flap.rotation.x = Math.PI;
+            flap.position.y = 0.28;
+            group.add(flap);
+            
+            // Sello brillante
+            const sealMat = new THREE.MeshStandardMaterial({ color: 0xffaa66, emissive: 0xff8844, emissiveIntensity: 0.5 });
+            const seal = new THREE.Mesh(new THREE.SphereGeometry(0.08, 16, 16), sealMat);
+            seal.position.set(0, 0.15, 0.06);
+            group.add(seal);
+            
+            // Etiqueta CSS2D
+            const titleDiv = document.createElement('div');
+            titleDiv.textContent = `${data.emoji} ${data.year} ${data.emoji}`;
+            titleDiv.style.backgroundColor = 'rgba(0,0,0,0.7)';
+            titleDiv.style.backdropFilter = 'blur(8px)';
+            titleDiv.style.borderRadius = '30px';
+            titleDiv.style.padding = '4px 12px';
+            titleDiv.style.border = `2px solid ${new THREE.Color(data.color).getStyle()}`;
+            titleDiv.style.fontSize = '0.7rem';
+            titleDiv.style.fontWeight = 'bold';
+            titleDiv.style.color = '#ffddcc';
+            titleDiv.style.fontFamily = 'monospace';
+            titleDiv.style.whiteSpace = 'nowrap';
+            titleDiv.style.cursor = 'pointer';
+            titleDiv.style.touchAction = 'manipulation';
+            
+            const titleLabel = new CSS2DObject(titleDiv);
+            titleLabel.position.set(0, -0.4, 0);
+            group.add(titleLabel);
+            
+            group.position.set(xPos, 0.2, zPos);
+            group.userData = {
+                index: index,
+                message: data.message,
+                year: data.year,
+                opened: false,
+                color: data.color
+            };
+            
+            scene.add(group);
+            
+            return {
+                group: group,
+                label: titleLabel,
+                opened: false,
+                index: index,
+                message: data.message,
+                year: data.year,
+                startX: xPos,
+                startZ: zPos,
+                floatOffset: Math.random() * Math.PI * 2
+            };
+        }
+
+        const envelopePositions = [
+            { x: -2.8, z: -1.2 },
+            { x: -1.4, z: -2.0 },
+            { x: 0, z: -2.3 },
+            { x: 1.4, z: -2.0 },
+            { x: 2.8, z: -1.2 },
+            { x: 2.0, z: 0.6 }
+        ];
+
+        lettersData.forEach((data, i) => {
+            const pos = envelopePositions[i % envelopePositions.length];
+            const letter = createEnvelope(data, i, pos.x, pos.z);
+            letters.push(letter);
+        });
+
+        let time = 0;
+        let flyingLetters = [];
+        
+        function updateCounterUI() {
+            const counter = document.getElementById('lettersCounter');
+            if (counter) {
+                const remaining = 6 - openedCount;
+                if (!poemShown) {
+                    counter.innerHTML = `✉️ CARTAS POR ABRIR: ${remaining}/6 ✉️`;
+                } else {
+                    counter.innerHTML = `💞 ¡TODAS LAS CARTAS ABIERTAS! 💞`;
+                }
+            }
+        }
+
+        function showMessage(msg) {
+            const box = document.getElementById('romanticMessage');
+            if (box) {
+                box.innerHTML = msg;
+                box.scrollTop = 0;
+            }
+        }
+
+        function showFinalPoem() {
+            if (poemShown) return;
+            poemShown = true;
+            showMessage(`💖💖💖 ¡RYOKO, MI AMOR! HAS ABIERTO TODAS LAS CARTAS DEL FUTURO 💖💖💖\n\n${finalPoem}\n\n📬 El futuro está escrito... contigo a mi lado para siempre. 📬`);
+            
+            // Explosión de corazones
+            for (let i = 0; i < 250; i++) {
+                const heart = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), new THREE.MeshStandardMaterial({ color: 0xff66aa, emissive: 0xff44aa }));
+                heart.position.set((Math.random() - 0.5) * 15, Math.random() * 8 + 1, (Math.random() - 0.5) * 12 - 4);
+                scene.add(heart);
+                setTimeout(() => scene.remove(heart), 3500);
+            }
+        }
+
+        function openLetter(letter) {
+            if (letter.opened) return;
+            if (poemShown) {
+                showMessage("💗 Todas las cartas ya están abiertas, mi amor. Nuestro futuro ya está escrito contigo. 💗");
+                return;
+            }
+            
+            letter.opened = true;
+            openedCount++;
+            
+            // Mostrar el mensaje de la carta
+            showMessage(`📬✨ ${lettersData[letter.index].title} ✨📬\n\n${letter.message}\n\n💌 Esta carta vuela hacia el cielo, hacia nuestro futuro juntos... 💌`);
+            
+            // Añadir anillo de luz
+            const ringGeo = new THREE.TorusGeometry(0.45, 0.05, 32, 100);
+            const ringMat = new THREE.MeshStandardMaterial({ color: letter.userData.color, emissive: letter.userData.color });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            letter.group.add(ring);
+            
+            const startY = letter.group.position.y;
+            const startTime = time;
+            const duration = 2.2;
+            
+            flyingLetters.push({
+                letter: letter,
+                startY: startY,
+                startTime: time,
+                duration: duration
+            });
+            
+            updateCounterUI();
+            
+            if (openedCount === 6) {
+                setTimeout(() => showFinalPoem(), 1000);
+            }
+        }
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        
+        function handleTap(e) {
+            if (poemShown) return;
+            
+            const rect = renderer.domElement.getBoundingClientRect();
+            let clientX, clientY;
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+                e.preventDefault();
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            
+            mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            
+            const clickableObjects = letters.map(l => l.group);
+            const intersects = raycaster.intersectObjects(clickableObjects);
+            
+            if (intersects.length > 0) {
+                const hit = intersects[0].object;
+                const letter = letters.find(l => l.group === hit);
+                if (letter && !letter.opened) {
+                    openLetter(letter);
+                } else if (letter && letter.opened) {
+                    showMessage("📬✨ Esta carta ya voló hacia nuestro futuro. Abre la siguiente carta, mi amor. ✨📬");
+                }
+            }
+        }
+
+        function animate() {
+            time += 0.016;
+            requestAnimationFrame(animate);
+            
+            // Animar partículas de tiempo
+            timeParticles.forEach((part, idx) => {
+                part.userData.angle += part.userData.speed;
+                part.position.x = Math.sin(part.userData.angle + idx) * part.userData.radius;
+                part.position.z = Math.cos(part.userData.angle + idx) * part.userData.radius;
+                part.position.y = part.userData.yOff + Math.sin(time * 1 + idx) * 0.2;
+                part.rotation.x += 0.02;
+                part.rotation.y += 0.03;
+            });
+            
+            // Animar cartas volando
+            for (let i = flyingLetters.length - 1; i >= 0; i--) {
+                const fly = flyingLetters[i];
+                const elapsed = time - fly.startTime;
+                const progress = Math.min(elapsed / fly.duration, 1);
+                
+                if (progress >= 1) {
+                    scene.remove(fly.letter.group);
+                    fly.letter.group.children.forEach(child => {
+                        if (child.isCSS2DObject) scene.remove(child);
+                    });
+                    flyingLetters.splice(i, 1);
+                } else {
+                    const ease = Math.sin(progress * Math.PI / 2);
+                    const newY = fly.startY + (7 * ease);
+                    fly.letter.group.position.y = newY;
+                    fly.letter.group.rotation.y = progress * Math.PI * 2.5;
+                    fly.letter.group.rotation.x = Math.sin(progress * Math.PI) * 0.6;
+                    const scale = 1 - (ease * 0.15);
+                    fly.letter.group.scale.set(scale, scale, scale);
+                }
+            }
+            
+            // Animar cartas restantes
+            letters.forEach((letter, idx) => {
+                if (!letter.opened) {
+                    const floatY = Math.sin(time * 1.5 + idx) * 0.08;
+                    letter.group.position.y = 0.2 + floatY;
+                    letter.group.rotation.y = Math.sin(time * 0.8 + idx) * 0.2;
+                }
+            });
+            
+            stars.rotation.y += 0.0003;
+            
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+        }
+        
+        animate();
+
+        window.addEventListener('click', handleTap);
+        window.addEventListener('touchstart', handleTap);
+        
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            window.location.reload();
+        });
+        
+        // Partículas de polvo mágico
+        const dustCount = 300;
+        const dustGeo = new THREE.BufferGeometry();
+        const dustPos = [];
+        for (let i = 0; i < dustCount; i++) {
+            dustPos.push((Math.random() - 0.5) * 16);
+            dustPos.push(Math.random() * 7);
+            dustPos.push((Math.random() - 0.5) * 14 - 4);
+        }
+        dustGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(dustPos), 3));
+        const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0xffaa77, size: 0.04, transparent: true }));
+        scene.add(dust);
+        
+        function animateDust() {
+            requestAnimationFrame(animateDust);
+            dust.rotation.y += 0.002;
+        }
+        animateDust();
+        
+        updateCounterUI();
+        
+        console.log("📬 Cartas del futuro listas - 1 año, 3 años, 5 años, 10 años, 20 años, 30 años... y un poema eterno 💕");
+    </script>
+</body>
+</html>
