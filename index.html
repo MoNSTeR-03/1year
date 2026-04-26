@@ -6,101 +6,42 @@
     <title>🌳 EL ÁRBOL DEL AMOR | AHMAD 🌙 RYOKO 🌳</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body {
-            overflow: hidden;
-            font-family: 'Courier New', monospace;
-            background: #0a2a1a;
-            color: white;
-            user-select: none;
-        }
+        body { overflow: hidden; font-family: 'Courier New', monospace; background: #0a2a1a; color: white; user-select: none; }
         canvas { display: block; position: absolute; top: 0; left: 0; }
 
         #ui {
-            position: fixed;
-            bottom: 14px;
-            left: 12px;
-            right: 12px;
-            background: rgba(0,0,0,0.88);
-            border-radius: 26px;
-            padding: 12px 14px;
-            border: 1px solid #88ffaa;
-            box-shadow: 0 0 22px rgba(136,255,170,0.3);
-            z-index: 100;
-            pointer-events: auto;
+            position: fixed; bottom: 14px; left: 12px; right: 12px;
+            background: rgba(0,0,0,0.88); border-radius: 26px; padding: 12px 14px;
+            border: 1px solid #88ffaa; box-shadow: 0 0 22px rgba(136,255,170,0.3);
+            z-index: 100; pointer-events: auto;
         }
-        #counter {
-            font-size: 0.68rem;
-            color: #aaffcc;
-            font-weight: bold;
-            letter-spacing: 1px;
-            text-align: center;
-            margin-bottom: 7px;
-        }
+        #counter { font-size: 0.68rem; color: #aaffcc; font-weight: bold; letter-spacing: 1px; text-align: center; margin-bottom: 7px; }
         #msgbox {
-            background: #081508dd;
-            border-radius: 18px;
-            padding: 10px 12px;
-            border-left: 4px solid #88ffaa;
-            color: #d8ffd8;
-            font-size: 0.68rem;
-            line-height: 1.65;
-            max-height: 115px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            word-break: break-word;
-            -webkit-overflow-scrolling: touch;
-            margin-bottom: 9px;
+            background: #081508dd; border-radius: 18px; padding: 10px 12px;
+            border-left: 4px solid #88ffaa; color: #d8ffd8; font-size: 0.68rem;
+            line-height: 1.65; max-height: 115px; overflow-y: auto;
+            white-space: pre-wrap; word-break: break-word; margin-bottom: 9px;
         }
         #resetBtn {
-            display: block;
-            width: 82%;
-            margin: 0 auto;
-            background: rgba(100,255,140,0.25);
-            border: 1px solid #88ffaa;
-            border-radius: 60px;
-            padding: 9px;
-            color: #ccffcc;
-            font-weight: bold;
-            font-size: 0.82rem;
-            font-family: 'Courier New', monospace;
-            cursor: pointer;
-            text-align: center;
-            touch-action: manipulation;
+            display: block; width: 82%; margin: 0 auto;
+            background: rgba(100,255,140,0.25); border: 1px solid #88ffaa;
+            border-radius: 60px; padding: 9px; color: #ccffcc;
+            font-weight: bold; font-size: 0.82rem; font-family: 'Courier New', monospace;
+            cursor: pointer; text-align: center; touch-action: manipulation;
         }
         #resetBtn:active { background: #88ffaa; color: #050f05; }
-
         #title {
-            position: fixed;
-            top: 12px;
-            left: 0; right: 0;
-            text-align: center;
-            font-size: 0.68rem;
-            color: #ccffaa;
-            background: rgba(0,0,0,0.6);
-            padding: 5px 14px;
-            border-radius: 30px;
-            width: fit-content;
-            margin: 0 auto;
-            z-index: 100;
-            pointer-events: none;
-            font-weight: bold;
-            backdrop-filter: blur(4px);
+            position: fixed; top: 12px; left: 0; right: 0; text-align: center;
+            font-size: 0.68rem; color: #ccffaa; background: rgba(0,0,0,0.6);
+            padding: 5px 14px; border-radius: 30px; width: fit-content;
+            margin: 0 auto; z-index: 100; pointer-events: none; font-weight: bold;
         }
-
-        .fruit-label {
-            position: fixed;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(6px);
-            border-radius: 30px;
-            padding: 5px 12px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            color: #ddffcc;
-            font-family: 'Courier New', monospace;
-            pointer-events: none;
-            white-space: nowrap;
-            transform: translate(-50%, 0);
-            z-index: 50;
+        .flabel {
+            position: fixed; background: rgba(0,0,0,0.75); border-radius: 30px;
+            padding: 5px 12px; font-size: 0.7rem; font-weight: bold;
+            color: #ddffcc; font-family: 'Courier New', monospace;
+            pointer-events: none; white-space: nowrap;
+            transform: translate(-50%, 0); z-index: 50;
         }
     </style>
 </head>
@@ -108,7 +49,6 @@
 <div id="title">🌳 EL ÁRBOL DEL AMOR | AHMAD ✨ RYOKO 🌳</div>
 <canvas id="c"></canvas>
 <div id="labels"></div>
-
 <div id="ui">
     <div id="counter">🍎 FRUTAS POR RECOGER: 7/7 🍎</div>
     <div id="msgbox">✨ Toca una FRUTA del árbol para recogerla... ✨
@@ -124,84 +64,86 @@ const canvas = document.getElementById('c');
 const W = () => window.innerWidth;
 const H = () => window.innerHeight;
 
+// ── THREE SETUP ───────────────────────────────────────────
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(W(), H());
-renderer.shadowMap.enabled = true;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0a2a1a);
-scene.fog = new THREE.FogExp2(0x0a2a1a, 0.008);
+scene.fog = new THREE.FogExp2(0x0a2a1a, 0.007);
 
 const camera = new THREE.PerspectiveCamera(42, W() / H(), 0.1, 1000);
 camera.position.set(0, 3.5, 10);
 camera.lookAt(0, 2.5, 0);
 
 // Lights
-scene.add(new THREE.AmbientLight(0x224422, 1));
-const sun = new THREE.DirectionalLight(0xffdd99, 1);
-sun.position.set(3, 8, 4); sun.castShadow = true; scene.add(sun);
-const pt1 = new THREE.PointLight(0x88ff66, 0.5); pt1.position.set(0,3,-5); scene.add(pt1);
-const pt2 = new THREE.PointLight(0xffaa88, 0.4); pt2.position.set(2,2,3);  scene.add(pt2);
+scene.add(new THREE.AmbientLight(0x335533, 1));
+const sun = new THREE.DirectionalLight(0xffdd99, 1.1);
+sun.position.set(3, 8, 4);
+scene.add(sun);
+const pl1 = new THREE.PointLight(0x88ff66, 0.5); pl1.position.set(0,3,-5); scene.add(pl1);
+const pl2 = new THREE.PointLight(0xffaa88, 0.4); pl2.position.set(2,2,3);  scene.add(pl2);
 
 // Stars
-const sPos = [];
-for (let i = 0; i < 1400; i++) sPos.push((Math.random()-.5)*400,(Math.random()-.5)*150+10,(Math.random()-.5)*150-80);
+const sArr = [];
+for (let i = 0; i < 1400; i++) sArr.push((Math.random()-.5)*400,(Math.random()-.5)*150+10,(Math.random()-.5)*150-80);
 const sGeo = new THREE.BufferGeometry();
-sGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(sPos), 3));
+sGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(sArr), 3));
 const stars = new THREE.Points(sGeo, new THREE.PointsMaterial({color:0xffeedd,size:0.08,transparent:true,opacity:0.6}));
 scene.add(stars);
 
 // Ground
 const ground = new THREE.Mesh(new THREE.CircleGeometry(9,32), new THREE.MeshStandardMaterial({color:0x2a5a2a,roughness:0.9}));
-ground.rotation.x = -Math.PI/2; ground.position.y = -0.5; ground.receiveShadow = true; scene.add(ground);
-for (let i=0;i<250;i++){
-    const g=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.07,0.14,3),new THREE.MeshStandardMaterial({color:0x4a8a3a}));
-    g.position.set((Math.random()-.5)*13,-0.45,(Math.random()-.5)*13); scene.add(g);
+ground.rotation.x = -Math.PI/2; ground.position.y = -0.5; scene.add(ground);
+for (let i = 0; i < 250; i++) {
+    const g = new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.07,0.14,3),new THREE.MeshStandardMaterial({color:0x4a8a3a}));
+    g.position.set((Math.random()-.5)*13,-0.45,(Math.random()-.5)*13);
+    scene.add(g);
 }
 
-// Tree
-const treeG = new THREE.Group();
+// Tree trunk + leaf layers (no fruits stored here)
 const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.7,0.9,2.2,8),new THREE.MeshStandardMaterial({color:0x8B5A2B,roughness:0.7}));
-trunk.position.y=0.6; trunk.castShadow=true; treeG.add(trunk);
+trunk.position.set(0,0.6,0); scene.add(trunk);
+
 [[0.9,1.3,0x4a9a3a],[0.8,1.9,0x5aaa4a],[0.7,2.4,0x3a8a2a],[0.55,2.85,0x4a9a3a]].forEach(([r,y,c])=>{
-    const m=new THREE.Mesh(new THREE.SphereGeometry(r,24,24),new THREE.MeshStandardMaterial({color:c,emissive:0x1a4a1a,emissiveIntensity:0.15}));
-    m.position.y=y; m.castShadow=true; treeG.add(m);
+    const m=new THREE.Mesh(new THREE.SphereGeometry(r,20,20),new THREE.MeshStandardMaterial({color:c,emissive:0x1a4a1a,emissiveIntensity:0.12}));
+    m.position.set(0,y,0); scene.add(m);
 });
-for(let i=0;i<50;i++){
+for (let i=0;i<50;i++){
     const sl=new THREE.Mesh(new THREE.SphereGeometry(0.11,7,7),new THREE.MeshStandardMaterial({color:0x6aba4a}));
     const a=Math.random()*Math.PI*2,r=0.8+Math.random()*0.6;
-    sl.position.set(Math.cos(a)*r,1.2+Math.random()*2,Math.sin(a)*r); treeG.add(sl);
+    sl.position.set(Math.cos(a)*r,1.2+Math.random()*2,Math.sin(a)*r);
+    scene.add(sl);
 }
-scene.add(treeG);
 
 // Pollen
-const pPos=[];
-for(let i=0;i<300;i++) pPos.push((Math.random()-.5)*14,Math.random()*6,(Math.random()-.5)*12-4);
+const pArr=[];
+for(let i=0;i<300;i++) pArr.push((Math.random()-.5)*14,Math.random()*6,(Math.random()-.5)*12-4);
 const pGeo=new THREE.BufferGeometry();
-pGeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(pPos),3));
+pGeo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(pArr),3));
 const pollen=new THREE.Points(pGeo,new THREE.PointsMaterial({color:0xffcc88,size:0.055,transparent:true,opacity:0.65}));
 scene.add(pollen);
 
-// Fruit data
-const FRUIT_DATA = [
-    {name:"FRESA",emoji:"🍓",color:0xff3366,pos:[1.0,1.8,0.6],r:0.22,
-     msg:"💖 AHMAD → RYOKO 💖\n\nMi hermosa Ryoko, esta fresa es como el primer latido de mi corazón cuando te vi. Dulce, roja, llena de vida. Eres la razón por la que sonrío cada mañana. Cada día a tu lado es un regalo que atesoro más que cualquier tesoro del universo. Gracias por ser mi novia, mi amiga, mi todo. Te quiero con cada fibra de mi ser. 💗"},
-    {name:"PLÁTANO",emoji:"🍌",color:0xffdd66,pos:[-0.8,1.9,0.9],r:0.28,
-     msg:"💛 AHMAD → RYOKO 💛\n\nRyoko, mi guerrera hermosa. Este plátano representa la energía y la alegría que me das cada día. Cuando estoy contigo, siento que puedo conquistar el mundo entero. Tu risa es mi combustible, tu sonrisa es mi sol. No hay día que no agradezca tenerte en mi vida. Eres mi fuerza, mi motivación, mi todo. 💛"},
-    {name:"CALABAZA",emoji:"🎃",color:0xff8844,pos:[-1.2,2.2,-0.5],r:0.26,
-     msg:"🧡 AHMAD → RYOKO 🧡\n\nMi amor, esta calabaza es como nuestro amor: grande, fuerte y lleno de magia. Contigo he descubierto que el amor verdadero existe, que la vida es más hermosa cuando se comparte. Eres mi princesa guerrera, mi hogar. Gracias por elegirme cada día. 🧡"},
-    {name:"SANDÍA",emoji:"🍉",color:0x44aa55,pos:[1.3,2.4,-0.3],r:0.3,
-     msg:"💚 AHMAD → RYOKO 💚\n\nRyoko, mi vida, mi todo. Esta sandía es dulce por fuera y por dentro, como tú. Eres refrescante como una brisa de verano, cálida como el sol, hermosa como la luna. No hay nadie en este universo que pueda compararse a ti. Te amo hasta el infinito y más allá. 💚"},
-    {name:"UVA",emoji:"🍇",color:0xaa66cc,pos:[-0.5,2.6,-1.0],r:0.18,
-     msg:"💜 AHMAD → RYOKO 💜\n\nMi pequeña uva dulce, mi amor. Esta uva representa todos los pequeños momentos que atesoro de ti: tus risas, tus miradas, tus abrazos. No importa lo que pase, siempre voy a estar a tu lado, sosteniendo tu mano, amándote con todo lo que soy. 💜"},
-    {name:"LECHUGA",emoji:"🥬",color:0x66dd66,pos:[1.1,2.0,-1.2],r:0.20,
-     msg:"💚 AHMAD → RYOKO 💚\n\nRyoko, mi amor fresco y puro como esta lechuga. Contigo he aprendido que el amor verdadero es simple y hermoso. No necesitamos grandes gestos. Solo necesito verte sonreír para sentir que tengo todo lo que necesito. Eres mi paz. 💚"},
-    {name:"NARANJA",emoji:"🍊",color:0xffaa44,pos:[-0.3,1.5,1.2],r:0.24,
-     msg:"🧡 AHMAD → RYOKO 🧡\n\nMi naranja brillante, mi sol. Eres la luz de mis días, la estrella que guía mis noches. No hay obstáculo que no pueda superar si estás a mi lado. Te prometo amarte y cuidarte por siempre, en las buenas y en las malas. Te amo, Ryoko. 💗"}
+// ── FRUIT DATA ────────────────────────────────────────────
+const FDATA = [
+    {name:"FRESA",    emoji:"🍓",color:0xff3366,wx:1.0, wy:1.8, wz:0.6, r:0.22,
+     msg:"💖 AHMAD → RYOKO 💖\n\nMi hermosa Ryoko, esta fresa es como el primer latido de mi corazón cuando te vi. Dulce, roja, llena de vida. Eres la razón por la que sonrío cada mañana. Cada día a tu lado es un regalo que atesoro. Gracias por ser mi novia, mi amiga, mi todo. Te quiero con cada fibra de mi ser. 💗"},
+    {name:"PLÁTANO",  emoji:"🍌",color:0xffdd66,wx:-0.8,wy:1.9, wz:0.9, r:0.28,
+     msg:"💛 AHMAD → RYOKO 💛\n\nRyoko, mi guerrera hermosa. Este plátano representa la energía y alegría que me das cada día. Cuando estoy contigo siento que puedo conquistar el mundo. Tu risa es mi combustible, tu sonrisa es mi sol. Eres mi fuerza, mi motivación, mi todo. 💛"},
+    {name:"CALABAZA", emoji:"🎃",color:0xff8844,wx:-1.2,wy:2.2, wz:-0.5,r:0.26,
+     msg:"🧡 AHMAD → RYOKO 🧡\n\nMi amor, esta calabaza es como nuestro amor: grande, fuerte y lleno de magia. Contigo descubrí que el amor verdadero existe y la vida es más hermosa compartida. Eres mi princesa guerrera, mi hogar. Gracias por elegirme cada día. 🧡"},
+    {name:"SANDÍA",   emoji:"🍉",color:0x44aa55,wx:1.3, wy:2.4, wz:-0.3,r:0.30,
+     msg:"💚 AHMAD → RYOKO 💚\n\nRyoko, mi vida, mi todo. Esta sandía es dulce por fuera y por dentro, como tú. Eres refrescante como una brisa de verano, cálida como el sol, hermosa como la luna. No hay nadie que se compare contigo. Te amo hasta el infinito. 💚"},
+    {name:"UVA",      emoji:"🍇",color:0xaa66cc,wx:-0.5,wy:2.6, wz:-1.0,r:0.18,
+     msg:"💜 AHMAD → RYOKO 💜\n\nMi pequeña uva dulce. Esta uva representa todos los pequeños momentos que atesoro de ti: tus risas, tus miradas, tus abrazos. Cada detalle tuyo es un tesoro. Siempre voy a estar a tu lado, sosteniendo tu mano, amándote. 💜"},
+    {name:"LECHUGA",  emoji:"🥬",color:0x66dd66,wx:1.1, wy:2.0, wz:-1.2,r:0.20,
+     msg:"💚 AHMAD → RYOKO 💚\n\nRyoko, mi amor fresco y puro. Contigo aprendí que el amor verdadero es simple y hermoso. No necesitamos grandes gestos. Solo necesito verte sonreír para sentir que lo tengo todo. Eres mi paz, mi calma. 💚"},
+    {name:"NARANJA",  emoji:"🍊",color:0xffaa44,wx:-0.3,wy:1.5, wz:1.2, r:0.24,
+     msg:"🧡 AHMAD → RYOKO 🧡\n\nMi naranja brillante, mi sol. Eres la luz de mis días, la estrella que guía mis noches. No hay obstáculo que no pueda superar si estás a mi lado. Te prometo amarte y cuidarte por siempre. Te amo, Ryoko. 💗"},
 ];
 
-const FINAL_POEM = `💗💗💗 POEMA DE AHMAD PARA RYOKO 💗💗💗
+const POEM = `💗💗💗 POEMA DE AHMAD PARA RYOKO 💗💗💗
 
 Bajo este árbol del amor,
 crecen mis sentimientos por ti.
@@ -228,81 +170,69 @@ bajo este árbol y bajo las estrellas.
 Ryoko, eres mi todo,
 y siempre serás mi más bella.
 
-— Ahmad 💕🌳
-✨✨✨✨✨✨✨✨✨✨✨✨`;
+— Ahmad 💕🌳`;
 
-// Build fruit objects
+// ── BUILD FRUITS — every mesh goes DIRECTLY into scene, NO groups ─────────────
 const fruits = [];
-const labelsContainer = document.getElementById('labels');
+const clickableMeshes = []; // ONLY the 7 fruit spheres go here
 
-FRUIT_DATA.forEach((fd, i) => {
-    const group = new THREE.Group();
-    group.position.set(...fd.pos);
-
+FDATA.forEach((fd, i) => {
+    // Sphere mesh — added directly to scene at world coordinates
     const mesh = new THREE.Mesh(
         new THREE.SphereGeometry(fd.r, 28, 28),
-        new THREE.MeshStandardMaterial({color:fd.color, emissive:fd.color, emissiveIntensity:0.28, roughness:0.3})
+        new THREE.MeshStandardMaterial({color:fd.color, emissive:fd.color, emissiveIntensity:0.3, roughness:0.3})
     );
-    mesh.castShadow = true;
-    mesh.userData.fruitIndex = i;  // TAG THE MESH
-    group.add(mesh);
+    mesh.position.set(fd.wx, fd.wy, fd.wz);
+    mesh.userData.fi = i;
+    scene.add(mesh);
+    clickableMeshes.push(mesh); // index i matches fruits[i]
 
-    const stem = new THREE.Mesh(new THREE.ConeGeometry(0.06,0.11,5), new THREE.MeshStandardMaterial({color:0x5a9a2a}));
-    stem.position.y = fd.r + 0.04;
-    group.add(stem);
-
-    scene.add(group);
+    // Stem — separate, also direct in scene
+    const stem = new THREE.Mesh(
+        new THREE.ConeGeometry(0.06,0.11,5),
+        new THREE.MeshStandardMaterial({color:0x5a9a2a})
+    );
+    stem.position.set(fd.wx, fd.wy + fd.r + 0.04, fd.wz);
+    scene.add(stem);
 
     // HTML label
-    const labelEl = document.createElement('div');
-    labelEl.className = 'fruit-label';
-    labelEl.textContent = `${fd.emoji} ${fd.name} ${fd.emoji}`;
-    labelEl.style.border = `2px solid #${fd.color.toString(16).padStart(6,'0')}`;
-    labelsContainer.appendChild(labelEl);
+    const lEl = document.createElement('div');
+    lEl.className = 'flabel';
+    lEl.textContent = `${fd.emoji} ${fd.name} ${fd.emoji}`;
+    lEl.style.border = `2px solid #${fd.color.toString(16).padStart(6,'0')}`;
+    document.getElementById('labels').appendChild(lEl);
 
-    fruits.push({ mesh, group, labelEl, collected:false, startY:fd.pos[1], data:fd });
+    fruits.push({ mesh, stem, lEl, collected:false, baseY:fd.wy, fd,
+                  flying:false, flyStart:0, flyFromY:fd.wy });
 });
 
-// State
-let collectedCount = 0;
-let poemShown = false;
-let clock = 0;
-const flyQueue = [];
+// ── STATE ─────────────────────────────────────────────────
+let nCollected = 0, poemDone = false, clock = 0;
 
-function setMsg(txt) {
-    const b = document.getElementById('msgbox');
-    b.textContent = txt; b.scrollTop = 0;
-}
-function setCounter() {
-    document.getElementById('counter').textContent = poemShown
+const msgBox  = document.getElementById('msgbox');
+const counter = document.getElementById('counter');
+function setMsg(t)  { msgBox.textContent = t; msgBox.scrollTop = 0; }
+function setCount() {
+    counter.textContent = poemDone
         ? '💞 ¡EL ÁRBOL HA FLORECIDO! AMOR ETERNO 💞'
-        : `🍎 FRUTAS POR RECOGER: ${7 - collectedCount}/7 🍎`;
+        : `🍎 FRUTAS POR RECOGER: ${7 - nCollected}/7 🍎`;
 }
 
-function collectFruit(idx) {
-    const fr = fruits[idx];
-    if (!fr || fr.collected) {
-        if (fr && fr.collected) setMsg("🍎✨ Esta fruta ya voló al cielo. ¡Recoge las otras! ✨🍎");
-        return;
-    }
+function collectFruit(i) {
+    const fr = fruits[i];
+    if (fr.collected) { setMsg("🍎 Esta fruta ya voló al cielo. ¡Recoge las otras! 🍎"); return; }
     fr.collected = true;
-    collectedCount++;
-    fr.labelEl.style.display = 'none';
-
-    setMsg(`🍎✨ ¡${fr.data.emoji} ${fr.data.name} RECOGIDA! ✨🍎\n\n${fr.data.msg}\n\n💚 Esta fruta vuela hacia el cielo con mi amor por ti... 💚`);
-    setCounter();
-
-    const ring = new THREE.Mesh(
-        new THREE.TorusGeometry(fr.data.r+0.08,0.04,12,48),
-        new THREE.MeshStandardMaterial({color:fr.data.color,emissive:fr.data.color,emissiveIntensity:1.0})
-    );
-    fr.group.add(ring);
-    flyQueue.push({fruit:fr, startClock:clock, startY:fr.group.position.y});
-
-    if (collectedCount === 7) {
+    fr.flying    = true;
+    fr.flyStart  = clock;
+    fr.flyFromY  = fr.mesh.position.y;
+    fr.lEl.style.display = 'none';
+    nCollected++;
+    setMsg(`🍎✨ ¡${fr.fd.emoji} ${fr.fd.name} RECOGIDA! ✨🍎\n\n${fr.fd.msg}\n\n💚 Esta fruta vuela hacia el cielo con mi amor por ti... 💚`);
+    setCount();
+    if (nCollected === 7) {
         setTimeout(() => {
-            poemShown = true; setCounter();
-            setMsg(`💖💖💖 ¡RYOKO, MI AMOR! HAS RECOGIDO TODAS LAS FRUTAS 💖💖💖\n\n${FINAL_POEM}\n\n🌳✨ El árbol del amor florece gracias a ti. ✨🌳`);
+            poemDone = true; setCount();
+            setMsg(`💖💖💖 ¡RYOKO, MI AMOR! HAS RECOGIDO TODAS LAS FRUTAS 💖💖💖\n\n${POEM}\n\n🌳✨ El árbol del amor florece gracias a ti. ✨🌳`);
             bloom();
         }, 1100);
     }
@@ -310,106 +240,125 @@ function collectFruit(idx) {
 
 function bloom() {
     for(let i=0;i<180;i++){
-        const f=new THREE.Mesh(new THREE.SphereGeometry(0.07,7,7),new THREE.MeshStandardMaterial({color:0xff88cc,emissive:0xff66aa,emissiveIntensity:0.8}));
+        const f=new THREE.Mesh(new THREE.SphereGeometry(0.07,6,6),new THREE.MeshStandardMaterial({color:0xff88cc,emissive:0xff66aa,emissiveIntensity:0.9}));
         const a=Math.random()*Math.PI*2,r=1+Math.random()*1.5;
-        f.position.set(Math.cos(a)*r,1.5+Math.random()*2,Math.sin(a)*r); scene.add(f);
-        setTimeout(()=>scene.remove(f),5000);
+        f.position.set(Math.cos(a)*r,1.5+Math.random()*2,Math.sin(a)*r);
+        scene.add(f); setTimeout(()=>scene.remove(f),5000);
     }
-    for(let i=0;i<160;i++){
-        const h=new THREE.Mesh(new THREE.SphereGeometry(0.09,7,7),new THREE.MeshStandardMaterial({color:0xff66aa,emissive:0xff44aa,emissiveIntensity:0.8}));
-        h.position.set((Math.random()-.5)*16,Math.random()*10+1,(Math.random()-.5)*12-4); scene.add(h);
-        setTimeout(()=>scene.remove(h),5000);
+    for(let i=0;i<120;i++){
+        const h=new THREE.Mesh(new THREE.SphereGeometry(0.08,6,6),new THREE.MeshStandardMaterial({color:0xff66aa,emissive:0xff44aa,emissiveIntensity:0.9}));
+        h.position.set((Math.random()-.5)*16,Math.random()*10+1,(Math.random()-.5)*12-4);
+        scene.add(h); setTimeout(()=>scene.remove(h),5000);
     }
 }
 
-// ── CLICK DETECTION ───────────────────────────────────────
-// Only raycast against the fruit sphere meshes directly.
-// Use a flag so only clicks that START on the canvas count.
-
+// ── RAYCASTER ─────────────────────────────────────────────
 const raycaster = new THREE.Raycaster();
-const ndcMouse  = new THREE.Vector2();
-let pointerDownOnCanvas = false;
-let pointerDownX = 0, pointerDownY = 0;
+const mouse2d   = new THREE.Vector2();
 
-canvas.addEventListener('pointerdown', (e) => {
-    pointerDownOnCanvas = true;
-    pointerDownX = e.clientX;
-    pointerDownY = e.clientY;
-});
-
-canvas.addEventListener('pointerup', (e) => {
-    if (!pointerDownOnCanvas) return;
-    pointerDownOnCanvas = false;
-
-    // Ignore drags (moved more than 8px)
-    const dx = e.clientX - pointerDownX;
-    const dy = e.clientY - pointerDownY;
-    if (Math.sqrt(dx*dx+dy*dy) > 8) return;
-
-    fireRaycast(e.clientX, e.clientY);
-});
-
-canvas.addEventListener('touchend', (e) => {
-    e.preventDefault();
-    const t = e.changedTouches[0];
-    fireRaycast(t.clientX, t.clientY);
-}, { passive: false });
-
-function fireRaycast(clientX, clientY) {
+function doRay(cx, cy) {
     const rect = canvas.getBoundingClientRect();
-    ndcMouse.x =  ((clientX - rect.left) / rect.width)  * 2 - 1;
-    ndcMouse.y = -((clientY - rect.top)  / rect.height) * 2 + 1;
+    mouse2d.x =  ((cx - rect.left) / rect.width)  * 2 - 1;
+    mouse2d.y = -((cy - rect.top)  / rect.height) * 2 + 1;
+    raycaster.setFromCamera(mouse2d, camera);
 
-    raycaster.setFromCamera(ndcMouse, camera);
-
-    // Only test the uncollected fruit sphere meshes — nothing else
-    const targets = fruits.filter(f => !f.collected).map(f => f.mesh);
+    // Only test uncollected fruit spheres — flat array, no nesting
+    const targets = clickableMeshes.filter((m, i) => !fruits[i].collected);
     if (!targets.length) return;
 
     const hits = raycaster.intersectObjects(targets, false);
-    if (hits.length > 0) {
-        const idx = hits[0].object.userData.fruitIndex;
-        if (idx !== undefined) collectFruit(idx);
-    }
+    if (hits.length > 0) collectFruit(hits[0].object.userData.fi);
 }
 
-// ── LABEL POSITIONING ─────────────────────────────────────
-const _v3 = new THREE.Vector3();
+// ── SINGLE UNIFIED INPUT HANDLER ─────────────────────────
+// Strategy: track touchstart/mousedown on the CANVAS only.
+// Only fire raycast on the matching end event, same canvas, minimal movement.
+// Never fires automatically — requires a real human press+release on the canvas.
+
+let inputActive = false;   // true only after a press that started ON the canvas
+let inputIsTouch = false;  // whether the active input is touch
+let inputStartX  = 0;
+let inputStartY  = 0;
+
+canvas.addEventListener('touchstart', e => {
+    // only single-finger taps
+    if (e.touches.length !== 1) return;
+    inputActive  = true;
+    inputIsTouch = true;
+    inputStartX  = e.touches[0].clientX;
+    inputStartY  = e.touches[0].clientY;
+}, { passive: true });
+
+canvas.addEventListener('touchend', e => {
+    if (!inputActive || !inputIsTouch) return;
+    inputActive = false;
+    e.preventDefault(); // stops ghost mouse events
+    const t = e.changedTouches[0];
+    // ignore if finger moved too much (scroll attempt)
+    if (Math.hypot(t.clientX - inputStartX, t.clientY - inputStartY) > 12) return;
+    doRay(t.clientX, t.clientY);
+}, { passive: false });
+
+canvas.addEventListener('touchcancel', () => { inputActive = false; });
+
+canvas.addEventListener('mousedown', e => {
+    if (inputIsTouch) return; // ignore if we're in a touch session
+    inputActive  = true;
+    inputIsTouch = false;
+    inputStartX  = e.clientX;
+    inputStartY  = e.clientY;
+});
+
+canvas.addEventListener('mouseup', e => {
+    if (!inputActive || inputIsTouch) return;
+    inputActive = false;
+    if (Math.hypot(e.clientX - inputStartX, e.clientY - inputStartY) > 10) return;
+    doRay(e.clientX, e.clientY);
+});
+
+window.addEventListener('mouseup',    () => { if (!inputIsTouch) inputActive = false; });
+window.addEventListener('touchcancel',() => { inputActive = false; });
+
+// ── LABEL PROJECTION ─────────────────────────────────────
+const _v = new THREE.Vector3();
 function updateLabels() {
     fruits.forEach(fr => {
-        if (fr.collected) { fr.labelEl.style.display='none'; return; }
-        fr.group.getWorldPosition(_v3);
-        _v3.y -= fr.data.r + 0.15;
-        _v3.project(camera);
-        if (_v3.z > 1) { fr.labelEl.style.display='none'; return; }
-        fr.labelEl.style.display = 'block';
-        fr.labelEl.style.left = (( _v3.x*0.5+0.5)*W()) + 'px';
-        fr.labelEl.style.top  = ((-_v3.y*0.5+0.5)*H()) + 'px';
+        if (fr.collected) { fr.lEl.style.display='none'; return; }
+        _v.copy(fr.mesh.position);
+        _v.y -= fr.fd.r + 0.2;
+        _v.project(camera);
+        if (_v.z > 1) { fr.lEl.style.display='none'; return; }
+        fr.lEl.style.display = 'block';
+        fr.lEl.style.left = ((_v.x*0.5+0.5)*W())+'px';
+        fr.lEl.style.top  = ((-_v.y*0.5+0.5)*H())+'px';
     });
 }
 
-// ── ANIMATION ─────────────────────────────────────────────
+// ── ANIMATION LOOP ────────────────────────────────────────
 function animate() {
     requestAnimationFrame(animate);
     clock += 0.016;
 
-    for(let i=flyQueue.length-1;i>=0;i--){
-        const fly=flyQueue[i];
-        const t=Math.min((clock-fly.startClock)/2.2,1);
-        if(t>=1){ scene.remove(fly.fruit.group); flyQueue.splice(i,1); }
-        else {
-            const ease=Math.sin(t*Math.PI/2);
-            fly.fruit.group.position.y = fly.startY + 7*ease;
-            fly.fruit.group.rotation.y = t*Math.PI*2;
-            fly.fruit.group.rotation.x = Math.sin(t*Math.PI)*0.5;
-            fly.fruit.group.scale.setScalar(1-ease*0.1);
+    fruits.forEach((fr, i) => {
+        if (!fr.collected) {
+            // idle bob
+            fr.mesh.position.y = fr.baseY + Math.sin(clock*1.5+i)*0.04;
+            fr.stem.position.y = fr.baseY + fr.fd.r + 0.04 + Math.sin(clock*1.5+i)*0.04;
+            fr.mesh.rotation.y = Math.sin(clock*0.8+i)*0.15;
+        } else if (fr.flying) {
+            const t = Math.min((clock - fr.flyStart) / 2.3, 1);
+            const ease = Math.sin(t * Math.PI / 2);
+            const ny = fr.flyFromY + 8*ease;
+            fr.mesh.position.y = ny;
+            fr.stem.position.y = ny + fr.fd.r + 0.04;
+            fr.mesh.rotation.y += 0.08;
+            fr.mesh.scale.setScalar(1 - ease*0.15);
+            if (t >= 1) {
+                fr.flying = false;
+                scene.remove(fr.mesh);
+                scene.remove(fr.stem);
+            }
         }
-    }
-
-    fruits.forEach((fr,i)=>{
-        if(fr.collected||flyQueue.some(f=>f.fruit===fr)) return;
-        fr.group.position.y = fr.startY + Math.sin(clock*1.5+i)*0.04;
-        fr.group.rotation.y = Math.sin(clock*0.8+i)*0.15;
     });
 
     stars.rotation.y  += 0.0003;
@@ -421,16 +370,15 @@ function animate() {
 
 animate();
 
-window.addEventListener('resize', ()=>{
+window.addEventListener('resize', () => {
     camera.aspect = W()/H();
     camera.updateProjectionMatrix();
     renderer.setSize(W(),H());
 });
 
-document.getElementById('resetBtn').addEventListener('click', ()=> window.location.reload());
+document.getElementById('resetBtn').addEventListener('click', () => window.location.reload());
 
-setCounter();
-console.log('🌳 Árbol del Amor listo — ¡toca las frutas! 🍓🍌🎃🍉🍇🥬🍊');
+setCount();
 
 })();
 </script>
