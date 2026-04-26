@@ -533,7 +533,12 @@ y siempre serás mi más bella.
             mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
             
-            const clickableObjects = fruits.map(f => f.group);
+            const clickableObjects = [];
+fruits.forEach(f => {
+    f.group.traverse(child => {
+        if (child.isMesh) clickableObjects.push(child);
+    });
+});
             const intersects = raycaster.intersectObjects(clickableObjects);
             
             if (intersects.length > 0) {
