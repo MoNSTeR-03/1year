@@ -361,7 +361,7 @@ y siempre serás mi más bella.
             const fruitMat = new THREE.MeshStandardMaterial({ color: data.color, emissive: data.color, emissiveIntensity: 0.3, roughness: 0.3 });
             const fruitBody = new THREE.Mesh(new THREE.SphereGeometry(data.size, 32, 32), fruitMat);
             fruitBody.castShadow = true;
-            group.add(fruitBody);
+            group.userData.isFruit = true;
             
             // Hojita encima de la fruta
             const leafMatFruit = new THREE.MeshStandardMaterial({ color: 0x6aba4a });
