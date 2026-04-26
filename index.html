@@ -114,11 +114,9 @@
     <div class="title">🌳 EL ÁRBOL DEL AMOR | AHMAD ✨ RYOKO 🌳</div>
     <div class="ui-panel" id="uiPanel">
         <div class="fruits-counter" id="fruitsCounter">🍎 FRUTAS POR RECOGER: 7/7 🍎</div>
-        <div class="message-box" id="romanticMessage">
-            ✨ Toca una FRUTA del árbol para recogerla... ✨<br>
-            Cada fruta contiene un mensaje de amor de Ahmad para ti. 🌳💚
-        </div>
-        <div class="reset-btn" id="resetBtn">🔄 REINICIAR ÁRBOL 🔄</div>
+        <div class="message-box" id="romanticMessage">✨ Toca una FRUTA del árbol para recogerla... ✨
+Cada fruta contiene un mensaje de amor de Ahmad para ti. 🌳💚</div>
+        <button class="reset-btn" id="resetBtn">🔄 REINICIAR ÁRBOL 🔄</button>
     </div>
 
     <script type="importmap">
@@ -165,7 +163,6 @@
         const backLight = new THREE.PointLight(0x88ff66, 0.5);
         backLight.position.set(0, 3, -5);
         scene.add(backLight);
-        
         const fillLight = new THREE.PointLight(0xffaa88, 0.4);
         fillLight.position.set(2, 2, 3);
         scene.add(fillLight);
@@ -182,7 +179,7 @@
         const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffeedd, size: 0.08, transparent: true, opacity: 0.6 }));
         scene.add(stars);
 
-        // Suelo (césped)
+        // Suelo
         const ground = new THREE.Mesh(new THREE.CircleGeometry(8, 32), new THREE.MeshStandardMaterial({ color: 0x2a5a2a, roughness: 0.9, metalness: 0.1 }));
         ground.rotation.x = -Math.PI / 2;
         ground.position.y = -0.5;
@@ -195,115 +192,75 @@
             grass.position.x = (Math.random() - 0.5) * 12;
             grass.position.z = (Math.random() - 0.5) * 12;
             grass.position.y = -0.45;
-            grass.castShadow = true;
             scene.add(grass);
         }
 
         // ========= EL ÁRBOL DEL AMOR =========
         const treeGroup = new THREE.Group();
-        
+
         const trunkMat = new THREE.MeshStandardMaterial({ color: 0x8B5A2B, roughness: 0.7 });
         const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.9, 2.2, 8), trunkMat);
         trunk.position.y = 0.6;
         trunk.castShadow = true;
         treeGroup.add(trunk);
-        
-        const leafMat = new THREE.MeshStandardMaterial({ color: 0x4a9a3a, emissive: 0x2a6a1a, emissiveIntensity: 0.1 });
+
+        const leafMat  = new THREE.MeshStandardMaterial({ color: 0x4a9a3a, emissive: 0x2a6a1a, emissiveIntensity: 0.1 });
         const leafMat2 = new THREE.MeshStandardMaterial({ color: 0x5aaa4a, emissive: 0x2a6a1a, emissiveIntensity: 0.1 });
         const leafMat3 = new THREE.MeshStandardMaterial({ color: 0x3a8a2a, emissive: 0x2a6a1a, emissiveIntensity: 0.1 });
-        
-        const leafLayer1 = new THREE.Mesh(new THREE.SphereGeometry(0.9, 32, 32), leafMat);
-        leafLayer1.position.y = 1.3;
-        leafLayer1.castShadow = true;
-        treeGroup.add(leafLayer1);
-        
-        const leafLayer2 = new THREE.Mesh(new THREE.SphereGeometry(0.8, 32, 32), leafMat2);
-        leafLayer2.position.y = 1.9;
-        leafLayer2.castShadow = true;
-        treeGroup.add(leafLayer2);
-        
-        const leafLayer3 = new THREE.Mesh(new THREE.SphereGeometry(0.7, 32, 32), leafMat3);
-        leafLayer3.position.y = 2.4;
-        leafLayer3.castShadow = true;
-        treeGroup.add(leafLayer3);
-        
-        const leafLayer4 = new THREE.Mesh(new THREE.SphereGeometry(0.55, 32, 32), leafMat);
-        leafLayer4.position.y = 2.85;
-        leafLayer4.castShadow = true;
-        treeGroup.add(leafLayer4);
-        
-        // Hojas pequeñas
+
+        [[0.9, 1.3, leafMat], [0.8, 1.9, leafMat2], [0.7, 2.4, leafMat3], [0.55, 2.85, leafMat]].forEach(([r, y, m]) => {
+            const layer = new THREE.Mesh(new THREE.SphereGeometry(r, 32, 32), m);
+            layer.position.y = y;
+            layer.castShadow = true;
+            treeGroup.add(layer);
+        });
+
         for (let i = 0; i < 60; i++) {
             const smallLeaf = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), new THREE.MeshStandardMaterial({ color: 0x6aba4a }));
             const angle = Math.random() * Math.PI * 2;
             const radius = 0.8 + Math.random() * 0.6;
-            const yOffset = 1.2 + Math.random() * 2;
-            smallLeaf.position.x = Math.cos(angle) * radius;
-            smallLeaf.position.z = Math.sin(angle) * radius;
-            smallLeaf.position.y = yOffset;
-            smallLeaf.castShadow = true;
+            smallLeaf.position.set(Math.cos(angle) * radius, 1.2 + Math.random() * 2, Math.sin(angle) * radius);
             treeGroup.add(smallLeaf);
         }
-        
+
         scene.add(treeGroup);
-        
+
         // ========= FRUTAS =========
         const fruitsData = [
-            { 
-                name: "FRESA",
-                emoji: "🍓",
-                color: 0xff3366,
+            {
+                name: "FRESA", emoji: "🍓", color: 0xff3366,
                 message: "💖 AHMAD → RYOKO 💖\n\nMi hermosa Ryoko, esta fresa es como el primer latido de mi corazón cuando te vi. Dulce, roja, llena de vida. Eres la razón por la que sonrío cada mañana. Cada día a tu lado es un regalo que atesoro más que cualquier tesoro del universo. Gracias por ser mi novia, mi amiga, mi todo. Te quiero con cada fibra de mi ser. 💗",
-                position: { x: 1.0, y: 1.8, z: 0.6 },
-                size: 0.22
+                position: { x: 1.0, y: 1.8, z: 0.6 }, size: 0.22
             },
-            { 
-                name: "PLÁTANO",
-                emoji: "🍌",
-                color: 0xffdd66,
+            {
+                name: "PLÁTANO", emoji: "🍌", color: 0xffdd66,
                 message: "💛 AHMAD → RYOKO 💛\n\nRyoko, mi guerrera hermosa. Este plátano representa la energía y la alegría que me das cada día. Cuando estoy contigo, siento que puedo conquistar el mundo entero. Tu risa es mi combustible, tu sonrisa es mi sol. No hay día que no agradezca tenerte en mi vida. Eres mi fuerza, mi motivación, mi todo. Te amo más de lo que las palabras pueden expresar. 💛",
-                position: { x: -0.8, y: 1.9, z: 0.9 },
-                size: 0.28
+                position: { x: -0.8, y: 1.9, z: 0.9 }, size: 0.28
             },
-            { 
-                name: "CALABAZA",
-                emoji: "🎃",
-                color: 0xff8844,
+            {
+                name: "CALABAZA", emoji: "🎃", color: 0xff8844,
                 message: "🧡 AHMAD → RYOKO 🧡\n\nMi amor, esta calabaza es como nuestro amor: grande, fuerte y lleno de magia. Contigo he descubierto que el amor verdadero existe, que la vida es más hermosa cuando se comparte. Eres mi princesa guerrera, mi compañera de aventuras, mi hogar. Cada momento a tu lado es un capítulo hermoso en nuestra historia. Gracias por elegirme cada día. Te quiero con locura. 🧡",
-                position: { x: -1.2, y: 2.2, z: -0.5 },
-                size: 0.26
+                position: { x: -1.2, y: 2.2, z: -0.5 }, size: 0.26
             },
-            { 
-                name: "SANDÍA",
-                emoji: "🍉",
-                color: 0x44aa55,
+            {
+                name: "SANDÍA", emoji: "🍉", color: 0x44aa55,
                 message: "💚 AHMAD → RYOKO 💚\n\nRyoko, mi vida, mi todo. Esta sandía es dulce por fuera y por dentro, como tú. Eres refrescante como una brisa de verano, cálida como el sol, hermosa como la luna. No hay nadie en este universo que pueda compararse a ti. Eres única, especial, y completamente mía. Gracias por ser mi novia, mi amante, mi mejor amiga. Te amo hasta el infinito y más allá. 💚",
-                position: { x: 1.3, y: 2.4, z: -0.3 },
-                size: 0.3
+                position: { x: 1.3, y: 2.4, z: -0.3 }, size: 0.3
             },
-            { 
-                name: "UVA",
-                emoji: "🍇",
-                color: 0xaa66cc,
+            {
+                name: "UVA", emoji: "🍇", color: 0xaa66cc,
                 message: "💜 AHMAD → RYOKO 💜\n\nMi pequeña uva dulce, mi amor. Esta uva representa todos los pequeños momentos que atesoro de ti: tus risas, tus miradas, tus abrazos. Cada pequeño detalle tuyo es un tesoro para mí. Eres la razón por la que mi corazón late más fuerte. No importa lo que pase, siempre voy a estar a tu lado, sosteniendo tu mano, amándote con todo lo que soy. Te quiero, mi guerrera hermosa. 💜",
-                position: { x: -0.5, y: 2.6, z: -1.0 },
-                size: 0.18
+                position: { x: -0.5, y: 2.6, z: -1.0 }, size: 0.18
             },
-            { 
-                name: "LECHUGA",
-                emoji: "🥬",
-                color: 0x66dd66,
+            {
+                name: "LECHUGA", emoji: "🥬", color: 0x66dd66,
                 message: "💚 AHMAD → RYOKO 💚\n\nRyoko, mi amor fresco y puro como esta lechuga. Contigo he aprendido que el amor verdadero es simple y hermoso. No necesitamos grandes gestos ni regalos caros. Solo necesito verte sonreír para sentir que tengo todo lo que necesito. Eres mi paz, mi calma en medio de la tormenta. Gracias por ser tan increíblemente maravillosa. Eres mi todo. 💚",
-                position: { x: 1.1, y: 2.0, z: -1.2 },
-                size: 0.2
+                position: { x: 1.1, y: 2.0, z: -1.2 }, size: 0.2
             },
-            { 
-                name: "NARANJA",
-                emoji: "🍊",
-                color: 0xffaa44,
+            {
+                name: "NARANJA", emoji: "🍊", color: 0xffaa44,
                 message: "🧡 AHMAD → RYOKO 🧡\n\nMi naranja brillante, mi sol. Esta naranja es como tu personalidad: brillante, radiante, llena de energía positiva. Eres la luz de mis días, la estrella que guía mis noches. No hay obstáculo que no pueda superar si estás a mi lado. Contigo, todo es posible. Te prometo amarte y cuidarte por siempre, en las buenas y en las malas, hasta que el universo entero se desvanezca. Te amo, Ryoko. 💗",
-                position: { x: -0.3, y: 1.5, z: 1.2 },
-                size: 0.24
+                position: { x: -0.3, y: 1.5, z: 1.2 }, size: 0.24
             }
         ];
 
@@ -312,6 +269,9 @@
         let poemShown = false;
         let time = 0;
         let flyingFruits = [];
+
+        // *** KEY FIX: Map from mesh UUID → fruit index for O(1) lookup ***
+        const fruitMeshMap = new Map();
 
         const finalPoem = `💗💗💗 POEMA DE AHMAD PARA RYOKO 💗💗💗
 
@@ -343,268 +303,269 @@ y siempre serás mi más bella.
 — Ahmad 💕🌳
 ✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨✨`;
 
-        // Crear una fruta 3D
         function createFruit(data, index) {
             const group = new THREE.Group();
-            const pos = data.position;
-            
-            // Cuerpo de la fruta
-            const fruitMat = new THREE.MeshStandardMaterial({ color: data.color, emissive: data.color, emissiveIntensity: 0.3, roughness: 0.3 });
+
+            const fruitMat = new THREE.MeshStandardMaterial({
+                color: data.color,
+                emissive: data.color,
+                emissiveIntensity: 0.3,
+                roughness: 0.3
+            });
             const fruitBody = new THREE.Mesh(new THREE.SphereGeometry(data.size, 32, 32), fruitMat);
             fruitBody.castShadow = true;
-            fruitBody.userData = { isFruit: true, index: index };
+            // *** FIX: store index on both the mesh AND in the map ***
+            fruitBody.userData.fruitIndex = index;
+            fruitMeshMap.set(fruitBody.uuid, index);
             group.add(fruitBody);
-            
-            // Hojita
+
+            // Hojita decorativa
             const leafMatFruit = new THREE.MeshStandardMaterial({ color: 0x6aba4a });
             const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.12, 6), leafMatFruit);
             leaf.position.y = data.size + 0.05;
             group.add(leaf);
-            
+
             // Etiqueta CSS2D
             const labelDiv = document.createElement('div');
             labelDiv.textContent = `${data.emoji} ${data.name} ${data.emoji}`;
-            labelDiv.style.backgroundColor = 'rgba(0,0,0,0.7)';
-            labelDiv.style.backdropFilter = 'blur(8px)';
-            labelDiv.style.borderRadius = '30px';
-            labelDiv.style.padding = '6px 14px';
-            labelDiv.style.border = `2px solid ${new THREE.Color(data.color).getStyle()}`;
-            labelDiv.style.fontSize = '0.75rem';
-            labelDiv.style.fontWeight = 'bold';
-            labelDiv.style.color = '#ddffcc';
-            labelDiv.style.fontFamily = 'monospace';
-            labelDiv.style.whiteSpace = 'nowrap';
-            labelDiv.style.textAlign = 'center';
-            labelDiv.style.pointerEvents = 'none';
-            
+            labelDiv.style.cssText = `
+                background: rgba(0,0,0,0.7);
+                backdrop-filter: blur(8px);
+                border-radius: 30px;
+                padding: 6px 14px;
+                border: 2px solid ${new THREE.Color(data.color).getStyle()};
+                font-size: 0.75rem;
+                font-weight: bold;
+                color: #ddffcc;
+                font-family: monospace;
+                white-space: nowrap;
+                text-align: center;
+                pointer-events: none;
+            `;
             const label = new CSS2DObject(labelDiv);
             label.position.set(0, -data.size - 0.12, 0);
             group.add(label);
-            
-            group.position.set(pos.x, pos.y, pos.z);
-            group.userData = { isFruitGroup: true, index: index };
-            
+
+            group.position.set(data.position.x, data.position.y, data.position.z);
+
             scene.add(group);
-            
+
             return {
-                group: group,
-                label: label,
+                group,
+                label,
+                fruitBody,
                 collected: false,
-                index: index,
+                index,
                 message: data.message,
                 name: data.name,
                 emoji: data.emoji,
-                startY: pos.y,
-                startX: pos.x,
-                startZ: pos.z
+                startY: data.position.y,
+                data
             };
         }
 
-        // Crear todas las frutas
         fruitsData.forEach((data, i) => {
-            const fruit = createFruit(data, i);
-            fruits.push(fruit);
+            fruits.push(createFruit(data, i));
         });
 
         function updateCounterUI() {
             const counter = document.getElementById('fruitsCounter');
-            if (counter) {
-                const remaining = 7 - collectedCount;
-                if (!poemShown) {
-                    counter.innerHTML = `🍎 FRUTAS POR RECOGER: ${remaining}/7 🍎`;
-                } else {
-                    counter.innerHTML = `💞 ¡EL ÁRBOL HA FLORECIDO! AMOR ETERNO 💞`;
-                }
-            }
+            if (!counter) return;
+            const remaining = 7 - collectedCount;
+            counter.innerHTML = poemShown
+                ? `💞 ¡EL ÁRBOL HA FLORECIDO! AMOR ETERNO 💞`
+                : `🍎 FRUTAS POR RECOGER: ${remaining}/7 🍎`;
         }
 
         function showMessage(msg) {
             const box = document.getElementById('romanticMessage');
-            if (box) {
-                box.innerHTML = msg;
-                box.scrollTop = 0;
-            }
+            if (box) { box.textContent = msg; box.scrollTop = 0; }
         }
 
         function showFinalPoem() {
             if (poemShown) return;
             poemShown = true;
-            showMessage(`💖💖💖 ¡RYOKO, MI AMOR! HAS RECOGIDO TODAS LAS FRUTAS DEL ÁRBOL 💖💖💖\n\n${finalPoem}\n\n🌳✨ El árbol del amor florece gracias a ti. Gracias por ser mi novia, mi todo. ✨🌳`);
-            
-            // Flores que aparecen en el árbol
+            updateCounterUI();
+            showMessage(`💖💖💖 ¡RYOKO, MI AMOR! HAS RECOGIDO TODAS LAS FRUTAS DEL ÁRBOL 💖💖💖\n\n${finalPoem}\n\n🌳✨ El árbol del amor florece gracias a ti. ✨🌳`);
+
+            // Flores en el árbol
             for (let i = 0; i < 200; i++) {
-                const flower = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), new THREE.MeshStandardMaterial({ color: 0xff88cc, emissive: 0xff66aa }));
+                const flower = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.08, 8, 8),
+                    new THREE.MeshStandardMaterial({ color: 0xff88cc, emissive: 0xff66aa, emissiveIntensity: 0.5 })
+                );
                 const angle = Math.random() * Math.PI * 2;
                 const radius = 1 + Math.random() * 1.5;
-                const yPos = 1.5 + Math.random() * 2;
-                flower.position.x = Math.cos(angle) * radius;
-                flower.position.z = Math.sin(angle) * radius;
-                flower.position.y = yPos;
+                flower.position.set(Math.cos(angle) * radius, 1.5 + Math.random() * 2, Math.sin(angle) * radius);
                 scene.add(flower);
-                setTimeout(() => scene.remove(flower), 4000);
+                setTimeout(() => scene.remove(flower), 5000);
             }
-            
-            // Corazones
-            for (let i = 0; i < 300; i++) {
-                const heart = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), new THREE.MeshStandardMaterial({ color: 0xff66aa, emissive: 0xff44aa }));
+
+            // Corazones flotantes
+            for (let i = 0; i < 200; i++) {
+                const heart = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.1, 8, 8),
+                    new THREE.MeshStandardMaterial({ color: 0xff66aa, emissive: 0xff44aa, emissiveIntensity: 0.5 })
+                );
                 heart.position.set((Math.random() - 0.5) * 15, Math.random() * 10 + 1, (Math.random() - 0.5) * 12 - 5);
                 scene.add(heart);
-                setTimeout(() => scene.remove(heart), 4000);
+                setTimeout(() => scene.remove(heart), 5000);
             }
         }
 
         function collectFruit(fruit) {
-            if (fruit.collected) return;
-            if (poemShown) {
-                showMessage("💗 Ya recogiste todas las frutas, mi amor. El árbol floreció gracias a ti. Reinicia para revivir la magia. 💗");
+            if (fruit.collected) {
+                showMessage("🍎✨ Esta fruta ya voló al cielo con mi amor. ¡Recoge las otras! ✨🍎");
                 return;
             }
-            
+            if (poemShown) {
+                showMessage("💗 Ya recogiste todas las frutas. ¡El árbol floreció! Reinicia para revivir la magia. 💗");
+                return;
+            }
+
             fruit.collected = true;
             collectedCount++;
-            
-            // Mostrar mensaje largo
+
             showMessage(`🍎✨ ¡${fruit.emoji} ${fruit.name} RECOGIDA! ✨🍎\n\n${fruit.message}\n\n💚 Esta fruta vuela hacia el cielo con mi amor por ti... 💚`);
-            
-            // Anillo de luz alrededor de la fruta
-            const ringGeo = new THREE.TorusGeometry(0.35, 0.05, 32, 100);
-            const ringMat = new THREE.MeshStandardMaterial({ color: fruitsData[fruit.index].color, emissive: fruitsData[fruit.index].color });
-            const ring = new THREE.Mesh(ringGeo, ringMat);
+
+            // Anillo de luz
+            const ring = new THREE.Mesh(
+                new THREE.TorusGeometry(0.35, 0.05, 16, 60),
+                new THREE.MeshStandardMaterial({ color: fruit.data.color, emissive: fruit.data.color, emissiveIntensity: 0.8 })
+            );
             fruit.group.add(ring);
-            
-            const startY = fruit.group.position.y;
-            const startTime = time;
-            const duration = 2.2;
-            
+
             flyingFruits.push({
-                fruit: fruit,
-                startY: startY,
+                fruit,
+                startY: fruit.group.position.y,
                 startTime: time,
-                duration: duration
+                duration: 2.2
             });
-            
+
             updateCounterUI();
-            
+
             if (collectedCount === 7) {
-                setTimeout(() => showFinalPoem(), 1000);
+                setTimeout(showFinalPoem, 1200);
             }
         }
 
-        // Raycaster para detectar toques
+        // ========= RAYCASTER — FIXED =========
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
-        
-        function handleTap(e) {
-            if (poemShown) return;
-            
+
+        // Collect all fruit body meshes into an array for targeted raycasting
+        function getFruitMeshes() {
+            return fruits
+                .filter(f => !f.collected)
+                .map(f => f.fruitBody);
+        }
+
+        let lastTapTime = 0;
+
+        function handlePointer(clientX, clientY) {
+            // Debounce: ignore if fired within 200ms of last tap
+            const now = Date.now();
+            if (now - lastTapTime < 200) return;
+            lastTapTime = now;
+
             const rect = renderer.domElement.getBoundingClientRect();
-            let clientX, clientY;
-            if (e.touches) {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-                e.preventDefault();
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
-            }
-            
             mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
             mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
             raycaster.setFromCamera(mouse, camera);
-            
-            // Buscar todas las esferas de frutas
-            const intersects = raycaster.intersectObjects(scene.children, true);
-            
-            for (let i = 0; i < intersects.length; i++) {
-                const hit = intersects[i];
-                if (hit.object.userData && hit.object.userData.isFruit === true) {
-                    const fruitIndex = hit.object.userData.index;
-                    const fruit = fruits[fruitIndex];
-                    if (fruit && !fruit.collected) {
-                        collectFruit(fruit);
-                        return;
-                    } else if (fruit && fruit.collected) {
-                        showMessage("🍎✨ Esta fruta ya voló al cielo con mi amor. Recoge las otras frutas, mi vida. ✨🍎");
-                        return;
-                    }
+
+            // *** FIX: raycast only against the fruit body meshes directly ***
+            const meshes = getFruitMeshes();
+            if (meshes.length === 0) return;
+
+            const intersects = raycaster.intersectObjects(meshes, false);
+
+            if (intersects.length > 0) {
+                const hit = intersects[0].object;
+                const idx = hit.userData.fruitIndex;
+                if (idx !== undefined) {
+                    collectFruit(fruits[idx]);
                 }
             }
         }
 
+        // Use pointerdown for unified mouse + touch with no duplication
+        renderer.domElement.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            handlePointer(e.clientX, e.clientY);
+        }, { passive: false });
+
+        // ========= ANIMATION =========
         function animate() {
             time += 0.016;
             requestAnimationFrame(animate);
-            
-            // Animar frutas volando
+
+            // Frutas volando al cielo
             for (let i = flyingFruits.length - 1; i >= 0; i--) {
                 const fly = flyingFruits[i];
                 const elapsed = time - fly.startTime;
                 const progress = Math.min(elapsed / fly.duration, 1);
-                
+
                 if (progress >= 1) {
                     scene.remove(fly.fruit.group);
-                    fly.fruit.group.children.forEach(child => {
-                        if (child.isCSS2DObject) scene.remove(child);
-                    });
                     flyingFruits.splice(i, 1);
                 } else {
                     const ease = Math.sin(progress * Math.PI / 2);
-                    const newY = fly.startY + (7 * ease);
-                    fly.fruit.group.position.y = newY;
+                    fly.fruit.group.position.y = fly.startY + 7 * ease;
                     fly.fruit.group.rotation.y = progress * Math.PI * 2;
                     fly.fruit.group.rotation.x = Math.sin(progress * Math.PI) * 0.5;
-                    const scale = 1 - (ease * 0.1);
-                    fly.fruit.group.scale.set(scale, scale, scale);
+                    const scale = 1 - ease * 0.1;
+                    fly.fruit.group.scale.setScalar(scale);
                 }
             }
-            
-            // Animar frutas restantes
+
+            // Frutas flotando
             fruits.forEach((fruit, idx) => {
                 if (!fruit.collected && !flyingFruits.some(f => f.fruit === fruit)) {
-                    const floatY = Math.sin(time * 1.5 + idx) * 0.04;
-                    fruit.group.position.y = fruit.startY + floatY;
+                    fruit.group.position.y = fruit.startY + Math.sin(time * 1.5 + idx) * 0.04;
                     fruit.group.rotation.y = Math.sin(time * 0.8 + idx) * 0.15;
                 }
             });
-            
+
             stars.rotation.y += 0.0003;
-            
+
             renderer.render(scene, camera);
             labelRenderer.render(scene, camera);
         }
-        
+
         animate();
 
-        // Event listeners
-        window.addEventListener('click', handleTap);
-        window.addEventListener('touchstart', handleTap);
-        
-        document.getElementById('resetBtn').addEventListener('click', () => {
-            window.location.reload();
-        });
-        
-        // Partículas mágicas
+        // Partículas mágicas de polén
         const pollenCount = 300;
         const pollenGeo = new THREE.BufferGeometry();
         const pollenPos = [];
         for (let i = 0; i < pollenCount; i++) {
-            pollenPos.push((Math.random() - 0.5) * 14);
-            pollenPos.push(Math.random() * 6);
-            pollenPos.push((Math.random() - 0.5) * 12 - 4);
+            pollenPos.push((Math.random() - 0.5) * 14, Math.random() * 6, (Math.random() - 0.5) * 12 - 4);
         }
         pollenGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(pollenPos), 3));
-        const pollen = new THREE.Points(pollenGeo, new THREE.PointsMaterial({ color: 0xffcc88, size: 0.05, transparent: true }));
+        const pollen = new THREE.Points(pollenGeo, new THREE.PointsMaterial({ color: 0xffcc88, size: 0.05, transparent: true, opacity: 0.7 }));
         scene.add(pollen);
-        
+
         function animatePollen() {
             requestAnimationFrame(animatePollen);
             pollen.rotation.y += 0.001;
         }
         animatePollen();
-        
+
+        // Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            window.location.reload();
+        });
+
         updateCounterUI();
-        
-        console.log("🌳 El Árbol del Amor está listo - 7 frutas para recoger! 🍓🍌🎃🍉🍇🥬🍊");
+        console.log("🌳 El Árbol del Amor está listo — ¡7 frutas para recoger! 🍓🍌🎃🍉🍇🥬🍊");
     </script>
 </body>
 </html>
