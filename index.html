@@ -537,8 +537,15 @@ y siempre serás mi más bella.
             const intersects = raycaster.intersectObjects(clickableObjects);
             
             if (intersects.length > 0) {
-                const hit = intersects[0].object;
-                const fruit = fruits.find(f => f.group === hit);
+               const hit = intersects[0].object;
+
+// go up to the parent group
+let parent = hit;
+while (parent && !parent.userData.index && parent.parent) {
+    parent = parent.parent;
+}
+
+const fruit = fruits.find(f => f.group === parent);
                 if (fruit && !fruit.collected) {
                     collectFruit(fruit);
                 } else if (fruit && fruit.collected) {
