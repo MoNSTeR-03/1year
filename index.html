@@ -259,28 +259,39 @@ const mouse2d   = new THREE.Vector2();
 function doRay(cx, cy) {
     const rect = canvas.getBoundingClientRect();
 
-    mouse2d.x = ((cx - rect.left) / rect.width) * 2 - 1;
-    mouse2d.y = -((cy - rect.top) / rect.height) * 2 + 1;
+    const mx = ((cx - rect.left) / rect.width) * 2 - 1;
+    const my = -((cy - rect.top) / rect.height) * 2 + 1;
 
-    raycaster.setFromCamera(mouse2d, camera);
+    let bestFruit = null;
+    let bestDistance = Infinity;
 
-    // 🔥 IMPORTANT: check ALL fruits (not filtered)
-    const hits = raycaster.intersectObjects(clickableMeshes, false);
+    const temp = new THREE.Vector3();
 
-    if (hits.length === 0) return;
+    fruits.forEach((fr, i) => {
+        if (fr.collected) return;
 
-    // 🔥 find FIRST valid (not collected)
-    for (let i = 0; i < hits.length; i++) {
-        const fruitIndex = hits[i].object.userData.fi;
-        const fruit = fruits[fruitIndex];
+        // project fruit position to screen
+        temp.copy(fr.mesh.position);
+        temp.project(camera);
 
-        if (!fruit.collected) {
-            collectFruit(fruitIndex);
-            return;
+        const sx = temp.x;
+        const sy = temp.y;
+
+        const dx = sx - mx;
+        const dy = sy - my;
+        const dist = dx * dx + dy * dy;
+
+        if (dist < bestDistance) {
+            bestDistance = dist;
+            bestFruit = i;
         }
+    });
+
+    // threshold so random clicks don’t trigger
+    if (bestFruit !== null && bestDistance < 0.05) {
+        collectFruit(bestFruit);
     }
 }
-
 // ── SINGLE UNIFIED INPUT HANDLER ─────────────────────────
 // Strategy: track touchstart/mousedown on the CANVAS only.
 // Only fire raycast on the matching end event, same canvas, minimal movement.
