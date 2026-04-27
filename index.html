@@ -258,16 +258,27 @@ const mouse2d   = new THREE.Vector2();
 
 function doRay(cx, cy) {
     const rect = canvas.getBoundingClientRect();
-    mouse2d.x =  ((cx - rect.left) / rect.width)  * 2 - 1;
-    mouse2d.y = -((cy - rect.top)  / rect.height) * 2 + 1;
+
+    mouse2d.x = ((cx - rect.left) / rect.width) * 2 - 1;
+    mouse2d.y = -((cy - rect.top) / rect.height) * 2 + 1;
+
     raycaster.setFromCamera(mouse2d, camera);
 
-    // Only test uncollected fruit spheres — flat array, no nesting
-    const targets = clickableMeshes.filter((m, i) => !fruits[i].collected);
-    if (!targets.length) return;
+    // 🔥 IMPORTANT: check ALL fruits (not filtered)
+    const hits = raycaster.intersectObjects(clickableMeshes, false);
 
-    const hits = raycaster.intersectObjects(targets, false);
-    if (hits.length > 0) collectFruit(hits[0].object.userData.fi);
+    if (hits.length === 0) return;
+
+    // 🔥 find FIRST valid (not collected)
+    for (let i = 0; i < hits.length; i++) {
+        const fruitIndex = hits[i].object.userData.fi;
+        const fruit = fruits[fruitIndex];
+
+        if (!fruit.collected) {
+            collectFruit(fruitIndex);
+            return;
+        }
+    }
 }
 
 // ── SINGLE UNIFIED INPUT HANDLER ─────────────────────────
